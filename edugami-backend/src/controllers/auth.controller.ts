@@ -9,7 +9,14 @@ const prisma = new PrismaClient();
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password, role } = req.body;
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (!email || !password) {
+      res.status(400).json({ error: 'Correo y contraseña son requeridos.' });
+      return;
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const existingUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (existingUser) {
       res.status(400).json({ error: 'El correo ya está registrado.' });
       return;
@@ -20,7 +27,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const newUser = await prisma.user.create({
       data: {
         name,
-        email,
+        email: normalizedEmail,
         password: hashedPassword,
         role: userRole, 
         alias: userRole === 'STUDENT' ? (name || `Estudiante_${Math.floor(Math.random() * 1000)}`) : null
@@ -28,6 +35,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
     res.status(201).json({ message: 'Usuario creado exitosamente', userId: newUser.id });
   } catch (error) {
+    console.error('Error en register:', error);
     res.status(500).json({ error: 'Error en el servidor.' });
   }
 };
@@ -35,7 +43,14 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
-    const user = await prisma.user.findUnique({ where: { email } });
+    if (!email || !password) {
+      res.status(400).json({ error: 'Correo y contraseña son requeridos.' });
+      return;
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (!user) {
       res.status(404).json({ error: 'Credenciales inválidas.' });
       return;
@@ -57,6 +72,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       user: { id: user.id, name: user.name, role: user.role, alias: user.alias, streak: user.streak, xpTotal: user.xpTotal }
     });
   } catch (error) {
+    console.error('Error en login:', error);
     res.status(500).json({ error: 'Error en el servidor.' });
   }
 };

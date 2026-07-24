@@ -8,20 +8,20 @@ export const Route = createFileRoute('/')({
       { name: "description", content: "Tu panel de estudiante EduGami" },
     ],
   }),
-  // Guardia de seguridad: Si no hay token, lo mandamos al login
+  // Guardia de seguridad: Verificación compatible con SSR
   beforeLoad: () => {
-    const token = localStorage.getItem('edugami_token');
-    const role = localStorage.getItem('edugami_role');
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('edugami_token');
+      const role = localStorage.getItem('edugami_role');
 
-    if (!token) {
-      throw redirect({ to: '/login' });
-    }
+      if (!token) {
+        throw redirect({ to: '/login' });
+      }
 
-    // Si es profesor, lo redirigimos a su panel correspondiente
-    if (role === 'TEACHER') {
-      throw redirect({ to: '/teacher' });
+      if (role === 'TEACHER') {
+        throw redirect({ to: '/teacher' });
+      }
     }
   },
-  // Renderizamos ÚNICAMENTE nuestro nuevo componente dinámico
   component: DashboardContent,
 });

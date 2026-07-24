@@ -3,15 +3,16 @@ import { Register } from '../components/Register';
 
 export const Route = createFileRoute('/register')({
   beforeLoad: () => {
-    // Si el usuario ya está autenticado, no tiene sentido que vea el registro
-    const token = localStorage.getItem('edugami_token');
-    const role = localStorage.getItem('edugami_role');
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('edugami_token');
+      const role = localStorage.getItem('edugami_role');
 
-    if (token) {
-      if (role === 'TEACHER') {
-        throw redirect({ to: '/teacher' });
-      } else {
-        throw redirect({ to: '/' });
+      if (token) {
+        if (role === 'TEACHER') {
+          throw redirect({ to: '/teacher' });
+        } else {
+          throw redirect({ to: '/' });
+        }
       }
     }
   },
