@@ -34,9 +34,17 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       }
     });
     res.status(201).json({ message: 'Usuario creado exitosamente', userId: newUser.id });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error en register:', error);
-    res.status(500).json({ error: 'Error en el servidor.' });
+    if (error.code === 'P2021') {
+      res.status(500).json({ error: 'La base de datos aún no tiene las tablas creadas. Ejecuta npx prisma db push.' });
+      return;
+    }
+    if (error.code === 'P1001') {
+      res.status(500).json({ error: 'No se pudo conectar a la base de datos de PostgreSQL. Verifica la URL de Supabase/Railway.' });
+      return;
+    }
+    res.status(500).json({ error: error.message || 'Error en el servidor.' });
   }
 };
 
