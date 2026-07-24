@@ -5,6 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "bun --watch src/index.ts",
+    "build": "npx prisma db push",
+    "start": "npx prisma db push && bun run src/index.ts",
     "seed": "bun prisma/seed.ts"
   },
   "prisma": {
