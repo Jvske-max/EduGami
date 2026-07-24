@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "project": {
+    "name": "EduGami",
+    "fullName": "EduGami — Entorno Virtual de Enseñanza y Aprendizaje (EVEA) Gamificado",
+    "version": "1.0.0",
+    "status": "Production / Functional MVP",
+    "description": "EVEA híbrido que fusiona la gestión académica tradicional (estilo Google Classroom / Moodle) con micro-aprendizaje gamificado (mecánicas de Duolingo y sistema de logros de Steam).",
+    "institution": "Universidad Alejandro de Humboldt",
+    "academicLevel": "8vo Semestre — Ingeniería en Informática / Computación",
+    "authors": [
+      {
+        "name": "Fernando Silva",
+        "role": "Desarrollador Principal & Arquitecto de Software"
+      },
+      {
+        "name": "Isaac",
+        "role": "Co-Desarrollador"
+      }
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Jvske-max/EduGami.git",
+      "branch": "main"
+    }
+  },
+  "architecture": {
+    "pattern": "Monorepo (Frontend React + Backend Bun/Express)",
+    "frontend": {
+      "runtime": "Browser (Client-side Rendering + SSR ready)",
+      "framework": "React 19.2.0",
+      "metaFramework": "TanStack Start 1.168.26",
+      "router": "TanStack Router 1.170.16",
+      "stateAndDataFetching": "TanStack React Query 5.101.1",
+      "styling": "Tailwind CSS v4.2.1 + Vanilla CSS Variables",
+      "animations": "Framer Motion 12.42.2",
+      "icons": "Lucide React 1.26.0",
+      "httpClient": "Axios 1.18.1 con Interceptores JWT",
+      "responsiveDesign": {
+        "desktop": "Sidebar de navegación fija + Contenido + Panel lateral interactivo (xl)",
+        "mobile": "Sticky Top Header + Fixed Bottom Navigation Bar (Bottom Nav) + Modal Viewports Adaptativos (safe-area-inset)"
+      }
+    },
+    "backend": {
+      "runtime": "Bun / Node.js",
+      "framework": "Express 5.2.1",
+      "orm": "Prisma ORM 6.0.0",
+      "database": "PostgreSQL",
+      "cache": "Redis 6.1.0",
+      "authentication": "JSON Web Tokens (JWT) + Bcrypt 6.0.0"
+    }
+  },
+  "modules": {
+    "student": {
+      "role": "STUDENT",
+      "views": [
+        {
+          "id": "inicio",
+          "label": "Inicio",
+          "description": "Dashboard inteligente dinámico con búho animado, resumen de racha, XP y acceso rápido a quizzes pendientes."
+        },
+        {
+          "id": "clases",
+          "label": "Clases",
+          "description": "Vista estilo Google Classroom con selector horizontal de aulas, tareas pendientes y entregadas con su nota."
+        },
+        {
+          "id": "quizzes",
+          "label": "Quizzes",
+          "description": "Modo juego con barra de nivel de usuario, mapa semanal de racha y listado de trivias jugables."
+        },
+        {
+          "id": "logros",
+          "label": "Logros",
+          "description": "Sistema de insignias desbloqueables estilo Steam filtradas por rareza (Común, Raro, Épico, Legendario)."
+        }
+      ],
+      "gamificationMetrics": {
+        "xpPerLevel": 200,
+        "weeklyGoalXP": 1000,
+        "streakUnit": "días consecutivos",
+        "gradingScale": "0.0 a 20.0 pts"
+      }
+    },
+    "teacher": {
+      "role": "TEACHER",
+      "views": [
+        {
+          "id": "principal",
+          "label": "Panel Principal",
+          "description": "Centro de comando con métricas consolidadas, atajos de creación y listado de entregas recientes por calificar."
+        },
+        {
+          "id": "aulas",
+          "label": "Mis Aulas",
+          "description": "Gestión de asignaturas, creación de tareas tradicionales y creación de quizzes gamificados por cortes académicos."
+        },
+        {
+          "id": "estudiantes",
+          "label": "Estudiantes",
+          "description": "Directorio consolidado de alumnos inscritos, total de actividades completadas y cálculo automático de nota acumulada."
+        },
+        {
+          "id": "configuracion",
+          "label": "Configuración",
+          "description": "Modificación de datos de aulas, cambio de color distintivo, gestión de códigos de inscripción y eliminación de aulas."
+        }
+      ],
+      "specialTools": [
+        {
+          "name": "Quiz Wizard Focus Mode",
+          "route": "/quiz-wizard",
+          "description": "Creador interactivo de trivias con formulario a la izquierda y simulador de teléfono inteligente en vivo a la derecha."
+        }
+      ]
+    }
+  },
+  "steamAchievements": [
+    {
+      "id": "buho_nocturno",
+      "title": "El Búho Nocturno 🦉",
+      "description": "Entrega tu primera tarea tradicional a tiempo.",
+      "tier": "Común",
+      "requirement": "Total de tareas entregadas >= 1"
+    },
+    {
+      "id": "racha_imparable",
+      "title": "Racha Imparable 🔥",
+      "description": "Mantén una racha de al menos 3 días consecutivos de estudio.",
+      "tier": "Raro",
+      "requirement": "Días de racha >= 3"
+    },
+    {
+      "id": "velocidad_rayo",
+      "title": "Velocidad de Rayo ⚡",
+      "description": "Completa tu primer quiz gamificado con éxito.",
+      "tier": "Común",
+      "requirement": "Total de quizzes completados >= 1"
+    },
+    {
+      "id": "estudiante_dedicado",
+      "title": "Estudiante Dedicado 📚",
+      "description": "Inscríbete en al menos 2 aulas virtuales activas.",
+      "tier": "Raro",
+      "requirement": "Aulas inscritas >= 2"
+    },
+    {
+      "id": "acumulador_xp",
+      "title": "Acumulador de XP 💎",
+      "description": "Alcanza los 500 puntos de experiencia acumulados.",
+      "tier": "Épico",
+      "requirement": "XP total >= 500"
+    },
+    {
+      "id": "top_leaderboard",
+      "title": "Liga Diamante 👑",
+      "description": "Posiciónate entre los 3 primeros lugares del ranking global.",
+      "tier": "Legendario",
+      "requirement": "Posición en tabla global entre #1 y #3"
+    },
+    {
+      "id": "maestro_edugami",
+      "title": "Maestro EduGami 🌟",
+      "description": "Alcanza 1,000 XP y completa tu meta semanal.",
+      "tier": "Legendario",
+      "requirement": "XP total >= 1000"
+    }
+  ],
+  "projectLimitations": [
+    {
+      "category": "Almacenamiento de Archivos",
+      "detail": "Las entregas de tareas se realizan mediante URLs/hipervínculos externos (Google Drive, Docs, GitHub) para evitar costos y procesamiento de archivos binarios pesados en el servidor."
+    },
+    {
+      "category": "Formato de Evaluaciones",
+      "detail": "Los quizzes están acotados a preguntas de opción múltiple con respuesta única para garantizar dinamismo y calificación instantánea."
+    },
+    {
+      "category": "Escala de Evaluación Academic",
+      "detail": "Configurado exclusivamente en la escala de 0.0 a 20.0 puntos (sistema universitario venezolano)."
+    },
+    {
+      "category": "Cálculo de Racha (Streak)",
+      "detail": "Calculado de forma sincrónica en peticiones cliente-servidor basadas en actividad reciente sin requerir jobs cron demonizados."
+    }
+  ],
+  "techStack": {
+    "dependencies": {
+      "@hookform/resolvers": "^5.2.2",
+      "@radix-ui/react-dialog": "^1.1.15",
+      "@tanstack/react-query": "^5.101.1",
+      "@tanstack/react-router": "^1.170.16",
+      "@tanstack/react-start": "^1.168.26",
+      "axios": "^1.18.1",
+      "framer-motion": "^12.42.2",
+      "lucide-react": "^1.26.0",
+      "react": "^19.2.0",
+      "react-dom": "^19.2.0",
+      "tailwindcss": "^4.2.1",
+      "zod": "^3.24.2"
+    },
+    "backendDependencies": {
+      "@prisma/client": "^6.0.0",
+      "bcrypt": "^6.0.0",
+      "cors": "^2.8.6",
+      "express": "^5.2.1",
+      "jsonwebtoken": "^9.0.3",
+      "prisma": "^6.0.0",
+      "redis": "^6.1.0"
+    }
+  }
+}
