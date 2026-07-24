@@ -24,6 +24,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Rutas principales con prefijo /api
 app.use('/api/auth', authRoutes);
 app.use('/api/classrooms', classroomRoutes);
 app.use('/api/quizzes', quizRoutes);
@@ -31,14 +32,26 @@ app.use('/api/attempts', attemptRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/assignments', assignmentRoutes);
 
-// Ruta de prueba de salud del servidor
-app.get('/api/health', (_req: Request, res: Response) => {
+// Rutas fallback sin prefijo /api (para evitar 404 si la URL configurada en Vercel omite /api)
+app.use('/auth', authRoutes);
+app.use('/classrooms', classroomRoutes);
+app.use('/quizzes', quizRoutes);
+app.use('/attempts', attemptRoutes);
+app.use('/leaderboard', leaderboardRoutes);
+app.use('/assignments', assignmentRoutes);
+
+// Ruta de prueba de salud del servidor (Soporta / y /health y /api/health)
+const healthHandler = (_req: Request, res: Response) => {
   res.json({ 
     status: 'success', 
     message: 'Servidor EduGami en línea 🚀',
     timestamp: new Date().toISOString()
   });
-});
+};
+
+app.get('/', healthHandler);
+app.get('/health', healthHandler);
+app.get('/api/health', healthHandler);
 
 connectRedis();
 
