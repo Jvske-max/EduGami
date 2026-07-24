@@ -84,6 +84,18 @@ export const TeacherDashboard = () => {
   };
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('edugami_token');
+      const role = localStorage.getItem('edugami_role');
+      if (!token) {
+        handleLogout();
+        return;
+      }
+      if (role === 'STUDENT') {
+        navigate({ to: '/' });
+        return;
+      }
+    }
     loadDashboardData();
   }, []);
 

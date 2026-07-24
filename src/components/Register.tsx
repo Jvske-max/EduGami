@@ -35,8 +35,10 @@ export const Register = () => {
       }, 2000);
       
     } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.error || 'Ocurrió un error al registrar la cuenta.');
+      console.error("Error al registrar:", err);
+      const serverMessage = err.response?.data?.error;
+      const networkMessage = err.message ? `Error de conexión: ${err.message}` : null;
+      setError(serverMessage || networkMessage || 'Ocurrió un error al registrar la cuenta.');
     } finally {
       setIsLoading(false);
     }

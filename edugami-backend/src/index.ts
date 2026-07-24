@@ -16,9 +16,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Middlewares globales
-app.use(cors()); // Permite peticiones desde tu frontend
-app.use(express.json()); // Permite recibir JSON en el body de las peticiones
+// Middlewares globales con CORS explícito para producción
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(express.json());
+
 app.use('/api/auth', authRoutes);
 app.use('/api/classrooms', classroomRoutes);
 app.use('/api/quizzes', quizRoutes);
@@ -26,7 +31,7 @@ app.use('/api/attempts', attemptRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/assignments', assignmentRoutes);
 
-// Ruta de prueba
+// Ruta de prueba de salud del servidor
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ 
     status: 'success', 
@@ -38,5 +43,5 @@ app.get('/api/health', (_req: Request, res: Response) => {
 connectRedis();
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

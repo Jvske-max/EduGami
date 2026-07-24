@@ -74,14 +74,29 @@ export const DashboardContent = () => {
       if (clsList.length > 0 && !selectedClassId) {
         setSelectedClassId(clsList[0].id);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al cargar datos", error);
+      if (error.response?.status === 401 || (typeof window !== 'undefined' && !localStorage.getItem('edugami_token'))) {
+        handleLogout();
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('edugami_token');
+      const role = localStorage.getItem('edugami_role');
+      if (!token) {
+        handleLogout();
+        return;
+      }
+      if (role === 'TEACHER') {
+        navigate({ to: '/teacher' });
+        return;
+      }
+    }
     loadData();
   }, []);
 
