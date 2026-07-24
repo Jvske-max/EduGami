@@ -300,19 +300,39 @@ export const TeacherDashboard = () => {
   const selectedClassForTask = classrooms.find(c => c.id === newAssignment.classroomId);
 
   return (
-    <div className="flex h-screen w-full bg-brand-cream font-sans text-zinc-900 selection:bg-brand-orange/20 overflow-hidden relative">
+    <div className="flex flex-col lg:flex-row h-screen lg:h-screen w-full bg-brand-cream font-sans text-zinc-900 selection:bg-brand-orange/20 overflow-hidden relative">
       
+      {/* ================= HEADER MÓVIL ================= */}
+      <header className="flex lg:hidden items-center justify-between border-b border-zinc-200 bg-brand-paper px-4 py-3 shrink-0 z-30 shadow-xs">
+        <div className="flex items-center gap-2">
+          <div className="grid size-8 place-items-center rounded-xl bg-brand-orange shadow-[0_2px_0_0_#cc7800]">
+            <Zap className="size-4 text-white" strokeWidth={3} />
+          </div>
+          <span className="text-lg font-bold tracking-tight text-zinc-900">
+            EduGami <span className="text-xs text-brand-orange font-bold">Profe</span>
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 rounded-full bg-brand-orange/10 px-3 py-1 text-xs font-bold text-brand-orange">
+            <span>Prof. {userProfile?.alias || 'Docente'}</span>
+          </div>
+          <button onClick={handleLogout} className="p-1.5 text-zinc-400 hover:text-red-500 transition-colors" title="Cerrar Sesión">
+            <LogOut className="size-5" />
+          </button>
+        </div>
+      </header>
+
       {/* ================= MODAL CALIFICAR ENTREGA ================= */}
       {gradingSubmission && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white w-full max-w-md rounded-[28px] p-8 shadow-2xl relative">
-            <button onClick={() => setGradingSubmission(null)} className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-700">
+          <div className="bg-white w-[94vw] max-w-md rounded-[24px] sm:rounded-[28px] p-5 sm:p-8 shadow-2xl relative max-h-[90dvh] overflow-y-auto">
+            <button onClick={() => setGradingSubmission(null)} className="absolute top-5 right-5 text-zinc-400 hover:text-zinc-700">
               <X className="size-5" />
             </button>
             <div className="grid size-12 place-items-center rounded-xl bg-brand-blue/10 text-brand-blue mb-4">
               <Award className="size-6" strokeWidth={2.5} />
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-1">Calificar Entrega</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Calificar Entrega</h2>
             <p className="text-sm font-bold text-brand-blue mb-1">{gradingSubmission.assignmentTitle}</p>
             <p className="text-xs text-zinc-500 mb-4">Estudiante: <strong>{gradingSubmission.studentName}</strong></p>
 
@@ -369,11 +389,11 @@ export const TeacherDashboard = () => {
       {/* ================= MODAL EDITAR AULA ================= */}
       {editingClassroom && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white w-full max-w-md rounded-[28px] p-8 shadow-2xl relative">
-            <button onClick={() => setEditingClassroom(null)} className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-700">
+          <div className="bg-white w-[94vw] max-w-md rounded-[24px] sm:rounded-[28px] p-5 sm:p-8 shadow-2xl relative max-h-[90dvh] overflow-y-auto">
+            <button onClick={() => setEditingClassroom(null)} className="absolute top-5 right-5 text-zinc-400 hover:text-zinc-700">
               <X className="size-5" />
             </button>
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
               <Edit className="text-brand-orange size-6" /> Modificar Aula
             </h2>
 
@@ -429,11 +449,11 @@ export const TeacherDashboard = () => {
       {/* ================= MODAL ELIMINAR AULA ================= */}
       {deletingClassroom && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white w-full max-w-md rounded-[28px] p-8 shadow-2xl relative text-center">
+          <div className="bg-white w-[94vw] max-w-md rounded-[24px] sm:rounded-[28px] p-5 sm:p-8 shadow-2xl relative text-center max-h-[90dvh] overflow-y-auto">
             <div className="grid size-14 place-items-center rounded-full bg-red-100 text-red-600 mx-auto mb-4">
               <Trash2 className="size-7" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">¿Eliminar Aula?</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">¿Eliminar Aula?</h2>
             <p className="text-sm text-zinc-600 mb-6">
               Estás a punto de eliminar el aula <strong>"{deletingClassroom.title}"</strong> ({deletingClassroom.section}). Esta acción borrará todas sus tareas, quizzes y registros de forma permanente.
             </p>
@@ -459,8 +479,8 @@ export const TeacherDashboard = () => {
         </div>
       )}
 
-      {/* ================= BARRA LATERAL ================= */}
-      <nav className="flex w-64 flex-col border-r border-zinc-950/5 bg-brand-paper p-4 shrink-0">
+      {/* ================= BARRA LATERAL ESCRITORIO ================= */}
+      <nav className="hidden lg:flex w-64 flex-col border-r border-zinc-950/5 bg-brand-paper p-4 shrink-0">
         <div className="mb-8 px-4 py-6">
           <div className="flex items-center gap-2">
             <div className="grid size-9 place-items-center rounded-xl bg-brand-orange shadow-[0_3px_0_0_#cc7800]">
@@ -512,11 +532,36 @@ export const TeacherDashboard = () => {
         </div>
       </nav>
 
+      {/* ================= BARRA NAVEGACIÓN MÓVIL (INFERIOR) ================= */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 flex lg:hidden items-center justify-around border-t border-zinc-200 bg-white/95 backdrop-blur-md px-2 py-2 shadow-lg pb-safe">
+        {[
+          { id: 'principal', icon: Activity, label: "Panel" },
+          { id: 'aulas', icon: BookOpen, label: "Aulas" },
+          { id: 'estudiantes', icon: Users, label: "Alumnos" },
+          { id: 'configuracion', icon: Settings, label: "Config" },
+        ].map((item) => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id as any)}
+              className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all ${
+                isActive ? "text-brand-orange font-bold scale-105" : "text-zinc-500 hover:text-zinc-800"
+              }`}
+            >
+              <Icon className="size-5" strokeWidth={isActive ? 2.5 : 2} />
+              <span className="text-[10px] font-medium leading-none">{item.label}</span>
+            </button>
+          );
+        })}
+      </nav>
+
       {/* ================= CONTENIDO PRINCIPAL ================= */}
-      <main className="flex-1 overflow-y-auto px-10 py-10">
+      <main className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-10 pt-4 lg:pt-10 pb-24 lg:pb-10 min-w-0">
         
         {/* Top bar de búsqueda */}
-        <div className="mb-8 flex items-center justify-between gap-4">
+        <div className="mb-6 lg:mb-8 flex items-center justify-between gap-3">
           <div className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
             <input 
@@ -1153,7 +1198,7 @@ export const TeacherDashboard = () => {
       </main>
 
       {/* ================= BARRA DERECHA (MÉTRICAS RÁPIDAS) ================= */}
-      <aside className="flex w-80 shrink-0 flex-col gap-6 overflow-y-auto border-l border-zinc-950/5 bg-brand-paper p-6">
+      <aside className="hidden xl:flex w-80 shrink-0 flex-col gap-6 overflow-y-auto border-l border-zinc-950/5 bg-brand-paper p-6">
         
         <div className="grid grid-cols-2 gap-3">
           <div className="flex items-center gap-3 rounded-2xl bg-white p-4 ring-1 ring-black/5 shadow-sm">

@@ -36,7 +36,7 @@ export const Login = () => {
   };
 
   return (
-    <div className="w-full max-w-md p-8 sm:p-10 bg-brand-paper border-2 border-border rounded-[28px] shadow-sm font-sans">
+    <div className="w-full max-w-md p-5 sm:p-10 bg-brand-paper border-2 border-border rounded-[24px] sm:rounded-[28px] shadow-sm font-sans">
       
       <div className="text-center mb-8">
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-800">

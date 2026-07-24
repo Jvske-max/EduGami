@@ -303,17 +303,40 @@ export const DashboardContent = () => {
   const currentSelectedClass = classrooms.find(c => c.id === selectedClassId) || classrooms[0];
 
   return (
-    <div className="flex h-screen w-full bg-brand-cream font-sans text-zinc-900 selection:bg-brand-green/20 overflow-hidden relative">
+    <div className="flex flex-col lg:flex-row h-screen lg:h-screen w-full bg-brand-cream font-sans text-zinc-900 selection:bg-brand-green/20 overflow-hidden relative">
       
+      {/* ================= HEADER MÓVIL ================= */}
+      <header className="flex lg:hidden items-center justify-between border-b border-zinc-200 bg-brand-paper px-4 py-3 shrink-0 z-30 shadow-xs">
+        <div className="flex items-center gap-2">
+          <div className="grid size-8 place-items-center rounded-xl bg-brand-green shadow-[0_2px_0_0_#46a302]">
+            <Zap className="size-4 text-white" strokeWidth={3} />
+          </div>
+          <span className="text-lg font-bold tracking-tight text-zinc-900">EduGami</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 rounded-full bg-brand-green/10 px-2.5 py-1 text-xs font-bold text-brand-green">
+            <Zap className="size-3.5 fill-current" />
+            <span>{currentXP} XP</span>
+          </div>
+          <div className="flex items-center gap-1 rounded-full bg-brand-orange/10 px-2.5 py-1 text-xs font-bold text-brand-orange">
+            <Flame className="size-3.5 fill-current" />
+            <span>{userProfile?.streak || 0}d</span>
+          </div>
+          <button onClick={handleLogout} className="p-1.5 text-zinc-400 hover:text-red-500 transition-colors" title="Cerrar Sesión">
+            <LogOut className="size-5" />
+          </button>
+        </div>
+      </header>
+
       {/* ================= MODAL DE TAREAS ================= */}
       {activeTask && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white w-full max-w-md rounded-[28px] p-8 shadow-2xl relative">
-            <button onClick={() => setActiveTask(null)} className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-700"><X className="size-5" /></button>
+          <div className="bg-white w-[94vw] max-w-md rounded-[24px] sm:rounded-[28px] p-5 sm:p-8 shadow-2xl relative max-h-[90dvh] overflow-y-auto">
+            <button onClick={() => setActiveTask(null)} className="absolute top-5 right-5 text-zinc-400 hover:text-zinc-700"><X className="size-5" /></button>
             <div className="grid size-12 place-items-center rounded-xl bg-brand-blue/10 text-brand-blue mb-4">
               <FileText className="size-6" strokeWidth={2.5} />
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Entregar Tarea</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Entregar Tarea</h2>
             <p className="text-sm font-bold text-brand-blue mb-6">{activeTask.title}</p>
             {activeTask.description && <p className="text-sm text-zinc-600 mb-6 p-4 bg-zinc-50 rounded-xl border border-zinc-100">{activeTask.description}</p>}
             
@@ -331,33 +354,33 @@ export const DashboardContent = () => {
       {/* ================= MODAL DE QUIZZES ================= */}
       {activeQuiz && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white w-full max-w-lg rounded-[28px] p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setActiveQuiz(null)} className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-700"><X className="size-5" /></button>
+          <div className="bg-white w-[94vw] max-w-lg rounded-[24px] sm:rounded-[28px] p-5 sm:p-8 shadow-2xl relative max-h-[90dvh] overflow-y-auto">
+            <button onClick={() => setActiveQuiz(null)} className="absolute top-5 right-5 text-zinc-400 hover:text-zinc-700"><X className="size-5" /></button>
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-3">
                 <div className="grid size-10 place-items-center rounded-xl bg-brand-green/10 text-brand-green">
                   <Zap className="size-5" strokeWidth={2.5} />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">{activeQuiz.title}</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">{activeQuiz.title}</h2>
               </div>
-              <span className="text-sm font-bold text-brand-green bg-brand-green/10 px-3 py-1 rounded-lg">+{activeQuiz.xpReward} XP</span>
+              <span className="text-xs sm:text-sm font-bold text-brand-green bg-brand-green/10 px-3 py-1 rounded-lg">+{activeQuiz.xpReward} XP</span>
             </div>
             
             <form onSubmit={handleQuizSubmit} className="space-y-6">
               {activeQuiz.questions?.map((question: any, idx: number) => (
-                <div key={question.id} className="bg-zinc-50 p-5 rounded-2xl border border-zinc-200">
-                  <h3 className="font-bold text-gray-800 mb-4">{idx + 1}. {question.text}</h3>
+                <div key={question.id} className="bg-zinc-50 p-4 sm:p-5 rounded-2xl border border-zinc-200">
+                  <h3 className="font-bold text-gray-800 mb-4 text-sm sm:text-base">{idx + 1}. {question.text}</h3>
                   <div className="space-y-3">
                     {question.options?.map((opt: any) => (
-                      <label key={opt.id} className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${quizAnswers[question.id] === opt.id ? 'border-brand-green bg-brand-green/5' : 'border-zinc-200 bg-white hover:border-brand-green/40'}`}>
+                      <label key={opt.id} className={`flex items-center gap-3 p-3.5 sm:p-4 rounded-xl border-2 cursor-pointer transition-all ${quizAnswers[question.id] === opt.id ? 'border-brand-green bg-brand-green/5' : 'border-zinc-200 bg-white hover:border-brand-green/40'}`}>
                         <input type="radio" name={`question_${question.id}`} value={opt.id} checked={quizAnswers[question.id] === opt.id} onChange={() => setQuizAnswers({...quizAnswers, [question.id]: opt.id})} className="size-4 text-brand-green focus:ring-brand-green" required />
-                        <span className="font-medium text-zinc-700">{opt.text}</span>
+                        <span className="font-medium text-xs sm:text-sm text-zinc-700">{opt.text}</span>
                       </label>
                     ))}
                   </div>
                 </div>
               ))}
-              <button type="submit" disabled={isSubmittingQuiz || Object.keys(quizAnswers).length !== activeQuiz.questions?.length} className="tactile w-full py-4 font-bold text-white bg-brand-green rounded-xl shadow-[0_4px_0_0_#46a302] hover:bg-green-600 disabled:opacity-50">
+              <button type="submit" disabled={isSubmittingQuiz || Object.keys(quizAnswers).length !== activeQuiz.questions?.length} className="tactile w-full py-3.5 sm:py-4 font-bold text-white bg-brand-green rounded-xl shadow-[0_4px_0_0_#46a302] hover:bg-green-600 disabled:opacity-50">
                 {isSubmittingQuiz ? 'Procesando...' : 'Completar Quiz'}
               </button>
             </form>
@@ -365,8 +388,8 @@ export const DashboardContent = () => {
         </div>
       )}
 
-      {/* ================= BARRA LATERAL (IZQUIERDA) ================= */}
-      <nav className="flex w-64 flex-col border-r border-zinc-950/5 bg-brand-paper p-4 shrink-0">
+      {/* ================= BARRA LATERAL ESCRITORIO (IZQUIERDA) ================= */}
+      <nav className="hidden lg:flex w-64 flex-col border-r border-zinc-950/5 bg-brand-paper p-4 shrink-0">
         <div className="mb-8 px-4 py-6">
           <div className="flex items-center gap-2">
             <div className="grid size-9 place-items-center rounded-xl bg-brand-green shadow-[0_3px_0_0_#46a302]">
@@ -413,16 +436,37 @@ export const DashboardContent = () => {
         </div>
       </nav>
 
+      {/* ================= BARRA NAVEGACIÓN MÓVIL (INFERIOR) ================= */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 flex lg:hidden items-center justify-around border-t border-zinc-200 bg-white/95 backdrop-blur-md px-2 py-2 shadow-lg pb-safe">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeStudentTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveStudentTab(item.id as any)}
+              className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all ${
+                isActive ? "text-brand-green font-bold scale-105" : "text-zinc-500 hover:text-zinc-800"
+              }`}
+            >
+              <Icon className="size-5" strokeWidth={isActive ? 2.5 : 2} />
+              <span className="text-[10px] font-medium leading-none">{item.label}</span>
+            </button>
+          );
+        })}
+      </nav>
+
       {/* ================= CONTENIDO PRINCIPAL ================= */}
-      <main className="flex-1 overflow-y-auto px-10 py-10">
+      <main className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-10 pt-4 lg:pt-10 pb-24 lg:pb-10 min-w-0">
         
         {/* Top Search Bar */}
-        <div className="mb-8 flex items-center justify-between gap-4">
+        <div className="mb-6 lg:mb-8 flex items-center justify-between gap-3">
           <div className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
             <input 
               type="text" 
               placeholder="Buscar clase, tarea o quiz..."
+
               className="w-full rounded-xl border border-zinc-950/5 bg-white py-2.5 pl-9 pr-3 text-sm outline-none ring-brand-green/30 transition placeholder:text-zinc-400 focus:ring-2 font-medium"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -1038,7 +1082,7 @@ export const DashboardContent = () => {
       </main>
 
       {/* ================= BARRA DERECHA (DATOS REALES) ================= */}
-      <aside className="flex w-80 shrink-0 flex-col gap-6 overflow-y-auto border-l border-zinc-950/5 bg-brand-paper p-6">
+      <aside className="hidden xl:flex w-80 shrink-0 flex-col gap-6 overflow-y-auto border-l border-zinc-950/5 bg-brand-paper p-6">
         
         {/* Racha y XP REAL */}
         <div className="grid grid-cols-2 gap-3">

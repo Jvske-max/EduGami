@@ -29,34 +29,35 @@ function QuizWizard() {
   };
 
   return (
-    <div className="flex h-screen w-full flex-col bg-brand-cream font-sans text-zinc-900 selection:bg-brand-green/20">
+    <div className="flex min-h-screen lg:h-screen w-full flex-col bg-brand-cream font-sans text-zinc-900 selection:bg-brand-green/20">
       
       {/* Top Navigation - Modo Focus */}
-      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-6 py-4">
-        <div className="flex items-center gap-4">
+      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-4 sm:px-6 py-3 sm:py-4 gap-3">
+        <div className="flex items-center gap-3">
           <Link
             to="/teacher"
-            className="flex size-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-500 transition-colors hover:bg-zinc-200 hover:text-zinc-900"
+            className="flex size-9 sm:size-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-500 transition-colors hover:bg-zinc-200 hover:text-zinc-900 shrink-0"
           >
-            <ArrowLeft className="size-5" />
+            <ArrowLeft className="size-4 sm:size-5" />
           </Link>
           <div>
-            <h1 className="text-lg font-bold leading-none">Nueva Micro-Lección</h1>
-            <p className="text-xs font-medium text-zinc-500 mt-1">Borrador sin guardar</p>
+            <h1 className="text-base sm:text-lg font-bold leading-none">Nueva Micro-Lección</h1>
+            <p className="text-[10px] sm:text-xs font-medium text-zinc-500 mt-1">Borrador sin guardar</p>
           </div>
         </div>
         
-        <button className="tactile inline-flex items-center gap-2 rounded-xl bg-brand-green px-6 py-2.5 text-sm font-bold text-white shadow-[0_4px_0_0_#46a302]">
+        <button className="tactile inline-flex items-center gap-2 rounded-xl bg-brand-green px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white shadow-[0_4px_0_0_#46a302] shrink-0">
           <Save className="size-4" strokeWidth={2.5} />
-          Guardar y Publicar
+          <span className="hidden sm:inline">Guardar y Publicar</span>
+          <span className="sm:hidden">Guardar</span>
         </button>
       </header>
 
       {/* Editor Split Screen */}
-      <main className="flex flex-1 overflow-hidden">
+      <main className="flex flex-col lg:flex-row flex-1 overflow-hidden">
         
         {/* Panel Izquierdo: Formulario de Edición */}
-        <section className="flex-1 overflow-y-auto bg-white p-8 lg:p-12">
+        <section className="flex-1 overflow-y-auto bg-white p-4 sm:p-6 lg:p-12">
           <div className="mx-auto max-w-2xl">
             <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-brand-blue/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand-blue">
               <Zap className="size-3" strokeWidth={3} /> Trivia Rápida

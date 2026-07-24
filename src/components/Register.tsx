@@ -47,7 +47,7 @@ export const Register = () => {
   // --- PANTALLA DE ÉXITO ---
   if (success) {
     return (
-      <div className="w-full max-w-md p-10 bg-brand-paper border-2 border-border rounded-[28px] text-center shadow-sm font-sans">
+      <div className="w-full max-w-md p-5 sm:p-10 bg-brand-paper border-2 border-border rounded-[24px] sm:rounded-[28px] text-center shadow-sm font-sans">
         <span className="text-7xl mb-4 block animate-bounce">🎉</span>
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-800 mb-2">¡Cuenta Creada!</h2>
         <p className="text-muted-foreground font-bold">Preparando tu entorno... redirigiendo al login.</p>
@@ -57,7 +57,7 @@ export const Register = () => {
 
   // --- PANTALLA DE REGISTRO ---
   return (
-    <div className="w-full max-w-md p-8 sm:p-10 bg-brand-paper border-2 border-border rounded-[28px] shadow-sm font-sans">
+    <div className="w-full max-w-md p-5 sm:p-10 bg-brand-paper border-2 border-border rounded-[24px] sm:rounded-[28px] shadow-sm font-sans">
       
       <div className="text-center mb-8">
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-800">
