@@ -162,7 +162,6 @@ npm run dev   # Ejecuta en http://localhost:3000 o puerto asignado por Vite
 Desarrollado como proyecto académico de 8vo Semestre para la **Universidad Alejandro de Humboldt**.
 
 * **Fernando Silva** — *Desarrollador Principal & Arquitecto de Software*
-* **Isaac** — *Co-Desarrollador*
 
 ---
 *EduGami — Uniendo rigor académico y micro-aprendizaje gamificado.* 🚀
