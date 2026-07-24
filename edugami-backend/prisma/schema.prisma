@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Definimos los roles de nuestro EVEA
+enum Role {
+  STUDENT
+  TEACHER
+}
+
+model User {
+  id            String                 @id @default(uuid())
+  name          String
+  email         String                 @unique
+  password      String
+  role          Role                   @default(STUDENT)
+  
+  // Perfil de Estudiante (Gamificación)
+  alias         String?                // Seudónimo para proteger la privacidad en el Leaderboard
+  xpTotal       Int                    @default(0)
+  streak        Int                    @default(0)
+  
+  // Relaciones
+  taughtClasses Classroom[]            @relation("ClassroomTeacher")
+  classrooms    Classroom[]            @relation("ClassroomStudents")
+  quizAttempts  QuizAttempt[]
+  submissions   AssignmentSubmission[] // Relación con entregas de tareas tradicionales
+  createdAt     DateTime               @default(now())
+}
+
+model Classroom {
+  id          String        @id @default(uuid())
+  title       String
+  section     String
+  stripeColor String        @default("bg-brand-blue")
+  
+  // Relaciones
+  teacherId   String
+  teacher     User          @relation("ClassroomTeacher", fields: [teacherId], references: [id])
+  students    User[]        @relation("ClassroomStudents")
+  cuts        AcademicCut[]
+  assignments Assignment[]  // Relación con tareas tradicionales
+  createdAt   DateTime      @default(now())
+}
+
+// Modelo para manejar los cortes (15%, 30%, 55%)
+model AcademicCut {
+  id          String        @id @default(uuid())
+  name        String        
+  weight      Float         
+  
+  // Relaciones
+  classroomId String
+  classroom   Classroom     @relation(fields: [classroomId], references: [id])
+  quizzes     Quiz[]        
+  assignments Assignment[]  // Tareas tradicionales asignadas a este corte
+}
+
+// --- MICRO-APRENDIZAJE (GAMIFICACIÓN) ---
+
+model Quiz {
+  id            String        @id @default(uuid())
+  title         String
+  xpReward      Int           @default(40) 
+  
+  // Relaciones
+  academicCutId String
+  academicCut   AcademicCut   @relation(fields: [academicCutId], references: [id])
+  questions     Question[]
+  attempts      QuizAttempt[]
+  createdAt     DateTime      @default(now())
+}
+
+model Question {
+  id          String        @id @default(uuid())
+  text        String
+  quizId      String
+  quiz        Quiz          @relation(fields: [quizId], references: [id])
+  options     Option[]
+}
+
+model Option {
+  id          String        @id @default(uuid())
+  text        String
+  isCorrect   Boolean       @default(false)
+  questionId  String
+  question    Question      @relation(fields: [questionId], references: [id])
+}
+
+model QuizAttempt {
+  id          String        @id @default(uuid())
+  score       Int           
+  xpEarned    Int           
+  studentId   String
+  student     User          @relation(fields: [studentId], references: [id])
+  quizId      String
+  quiz        Quiz          @relation(fields: [quizId], references: [id])
+  completedAt DateTime      @default(now())
+}
+
+// --- MACRO-APRENDIZAJE (TAREAS TRADICIONALES) ---
+
+model Assignment {
+  id            String                 @id @default(uuid())
+  title         String
+  description   String?
+  dueDate       DateTime?
+  
+  // Relaciones
+  classroomId   String
+  classroom     Classroom              @relation(fields: [classroomId], references: [id])
+  academicCutId String
+  academicCut   AcademicCut            @relation(fields: [academicCutId], references: [id])
+  submissions   AssignmentSubmission[]
+  createdAt     DateTime               @default(now())
+}
+
+model AssignmentSubmission {
+  id            String        @id @default(uuid())
+  contentUrl    String?       // URL del archivo subido (ej. Cloudinary) o link a Google Drive
+  grade         Float?        // Calificación oficial del profesor
+  feedback      String?       // Comentarios del profesor
+  
+  // Relaciones
+  studentId     String
+  student       User          @relation(fields: [studentId], references: [id])
+  assignmentId  String
+  assignment    Assignment    @relation(fields: [assignmentId], references: [id])
+  submittedAt   DateTime      @default(now())
+}

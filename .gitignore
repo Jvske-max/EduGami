@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+edugami-backend/node_modules/
+
+# Production builds & caches
+.output/
+.tanstack/
+dist/
+build/
+.wrangler/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+edugami-backend/.env
+
+# System & IDE files
+.DS_Store
+*.log
+.idea/
+.vscode/
