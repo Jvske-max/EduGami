@@ -5,6 +5,7 @@ edugami-backend/node_modules/
 # Production builds & caches
 .output/
 .tanstack/
+.vercel/
 dist/
 build/
 .wrangler/

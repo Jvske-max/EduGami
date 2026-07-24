@@ -1,1 +1,0 @@
-import{t as e}from"./axios-NvF_jRqF.js";var t=async t=>(await e.post(`/auth/login`,t)).data,n=async t=>(await e.post(`/auth/register`,t)).data,r=async()=>(await e.get(`/auth/me`)).data;export{t as n,n as r,r as t};
