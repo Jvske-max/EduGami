@@ -11,24 +11,47 @@ jobs:
     name: Ping Supabase Services
     runs-on: ubuntu-latest
     steps:
-      - name: Ping PostgREST API (Triggers Database Activity)
+      - name: Ping Supabase Endpoints
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
-          echo "Pinging Supabase REST API..."
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
-            -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}")
+          # Remove trailing slash from URL if present
+          CLEAN_URL="${SUPABASE_URL%/}"
 
-          echo "PostgREST HTTP Status: $HTTP_STATUS"
-          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 400 ]; then
-            echo "Supabase REST API is active."
-          else
-            echo "Error: PostgREST ping failed with status $HTTP_STATUS"
+          if [ -z "$CLEAN_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "Error: SUPABASE_URL or SUPABASE_KEY secret is not set in GitHub repository secrets."
             exit 1
           fi
 
-      - name: Ping Auth Health Endpoint
-        run: |
-          echo "Pinging Auth Service..."
-          curl -s -f -X GET "${{ secrets.SUPABASE_URL }}/auth/v1/health" \
-            -H "apikey: ${{ secrets.SUPABASE_KEY }}"
+          echo "1. Pinging PostgREST API at ${CLEAN_URL}/rest/v1/ ..."
+          RESPONSE=$(curl -s -L -w "\nHTTP_STATUS:%{http_code}" \
+            -X GET "${CLEAN_URL}/rest/v1/" \
+            -H "apikey: ${SUPABASE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_KEY}")
+
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS:" | cut -d':' -f2)
+          BODY=$(echo "$RESPONSE" | sed '/HTTP_STATUS:/d')
+
+          echo "PostgREST HTTP Status: $HTTP_STATUS"
+          echo "Response body snippet: ${BODY:0:150}"
+
+          echo "2. Pinging Auth Service at ${CLEAN_URL}/auth/v1/health ..."
+          AUTH_RESPONSE=$(curl -s -L -w "\nHTTP_STATUS:%{http_code}" \
+            -X GET "${CLEAN_URL}/auth/v1/health" \
+            -H "apikey: ${SUPABASE_KEY}")
+
+          AUTH_STATUS=$(echo "$AUTH_RESPONSE" | grep "HTTP_STATUS:" | cut -d':' -f2)
+          AUTH_BODY=$(echo "$AUTH_RESPONSE" | sed '/HTTP_STATUS:/d')
+
+          echo "Auth HTTP Status: $AUTH_STATUS"
+          echo "Auth Response: $AUTH_BODY"
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 400 ]; then
+            echo "Success: PostgREST ping completed successfully."
+          elif [ "$AUTH_STATUS" -ge 200 ] && [ "$AUTH_STATUS" -lt 400 ]; then
+            echo "Success: Auth ping completed successfully."
+          else
+            echo "Error: Both Supabase endpoints failed (PostgREST: $HTTP_STATUS, Auth: $AUTH_STATUS)."
+            exit 1
+          fi
