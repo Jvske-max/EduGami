@@ -491,44 +491,7 @@ export const DashboardContent = () => {
               </p>
             </header>
 
-            {/* HERO BANNER DINÁMICO (BÚHO ACTIVO VS BÚHO DURMIENDO) */}
             <section className="mb-12">
-              {/* Controles para alternar y probar ambos estados de la interfaz */}
-              <div className="mb-3 flex items-center justify-end gap-2 text-xs font-semibold text-zinc-500">
-                <span>Estado del Hero (Prueba UI):</span>
-                <button
-                  type="button"
-                  onClick={() => setHasQuizAvailableOverride(true)}
-                  className={`px-2.5 py-1 rounded-lg border text-[11px] font-bold transition-all ${
-                    hasQuizAvailable
-                      ? 'bg-brand-green text-white border-brand-green'
-                      : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50'
-                  }`}
-                >
-                  Hay quiz (Verde)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setHasQuizAvailableOverride(false)}
-                  className={`px-2.5 py-1 rounded-lg border text-[11px] font-bold transition-all ${
-                    !hasQuizAvailable
-                      ? 'bg-brand-blue text-white border-brand-blue'
-                      : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50'
-                  }`}
-                >
-                  Sin quizzes (Durmiendo)
-                </button>
-                {hasQuizAvailableOverride !== null && (
-                  <button
-                    type="button"
-                    onClick={() => setHasQuizAvailableOverride(null)}
-                    className="px-2 py-1 text-[10px] text-zinc-400 hover:text-zinc-600 underline"
-                  >
-                    Restablecer
-                  </button>
-                )}
-              </div>
-
               {hasQuizAvailable ? (
                 <div className="relative flex items-center justify-between overflow-hidden rounded-[28px] bg-brand-green p-8 text-white shadow-sm">
                   <div className="relative z-10 max-w-[46ch]">
