@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import mascotOwl from "@/assets/mascot-owl.png"; 
-import sleepingOwl from "@/assets/sleeping-owl.png";
+import mascotOwlSleeping from "@/assets/mascot-owl-sleeping.png";
 
 const navItems = [
   { id: 'inicio', icon: Home, label: "Inicio" },
@@ -52,6 +52,7 @@ export const DashboardContent = () => {
   const [activeQuiz, setActiveQuiz] = useState<any>(null);
   const [quizAnswers, setQuizAnswers] = useState<any>({});
   const [isSubmittingQuiz, setIsSubmittingQuiz] = useState(false);
+  const [hasQuizAvailableOverride, setHasQuizAvailableOverride] = useState<boolean | null>(null);
 
   const handleLogout = () => {
     localStorage.removeItem('edugami_token');
@@ -178,6 +179,7 @@ export const DashboardContent = () => {
   });
 
   const hasPendingQuizzes = allPendingQuizzes.length > 0;
+  const hasQuizAvailable = hasQuizAvailableOverride !== null ? hasQuizAvailableOverride : hasPendingQuizzes;
   const firstPendingQuiz = hasPendingQuizzes ? allPendingQuizzes[0] : null;
 
   // CÁLCULO DE RECOPILACIÓN DE TAREAS Y ACTIVIDADES COMPLETADAS
@@ -491,49 +493,116 @@ export const DashboardContent = () => {
 
             {/* HERO BANNER DINÁMICO (BÚHO ACTIVO VS BÚHO DURMIENDO) */}
             <section className="mb-12">
-              {hasPendingQuizzes ? (
-                <div className="relative flex items-center justify-between overflow-hidden rounded-[28px] bg-brand-green p-8 text-white">
+              {/* Controles para alternar y probar ambos estados de la interfaz */}
+              <div className="mb-3 flex items-center justify-end gap-2 text-xs font-semibold text-zinc-500">
+                <span>Estado del Hero (Prueba UI):</span>
+                <button
+                  type="button"
+                  onClick={() => setHasQuizAvailableOverride(true)}
+                  className={`px-2.5 py-1 rounded-lg border text-[11px] font-bold transition-all ${
+                    hasQuizAvailable
+                      ? 'bg-brand-green text-white border-brand-green'
+                      : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50'
+                  }`}
+                >
+                  Hay quiz (Verde)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHasQuizAvailableOverride(false)}
+                  className={`px-2.5 py-1 rounded-lg border text-[11px] font-bold transition-all ${
+                    !hasQuizAvailable
+                      ? 'bg-brand-blue text-white border-brand-blue'
+                      : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50'
+                  }`}
+                >
+                  Sin quizzes (Durmiendo)
+                </button>
+                {hasQuizAvailableOverride !== null && (
+                  <button
+                    type="button"
+                    onClick={() => setHasQuizAvailableOverride(null)}
+                    className="px-2 py-1 text-[10px] text-zinc-400 hover:text-zinc-600 underline"
+                  >
+                    Restablecer
+                  </button>
+                )}
+              </div>
+
+              {hasQuizAvailable ? (
+                <div className="relative flex items-center justify-between overflow-hidden rounded-[28px] bg-brand-green p-8 text-white shadow-sm">
                   <div className="relative z-10 max-w-[46ch]">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider backdrop-blur-sm">
-                      <Clock className="size-3" strokeWidth={3} /> Micro-lección 5 min
+                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider backdrop-blur-sm">
+                      <Clock className="size-3.5" strokeWidth={3} /> Micro-lección · 5 min
                     </div>
                     <h2 className="mb-3 text-2xl font-bold leading-tight md:text-3xl">Continuar aprendiendo</h2>
-                    <p className="mb-6 text-white/85 font-medium">
-                      Tienes un quiz disponible: <strong>"{firstPendingQuiz?.title}"</strong>. ¡Resuélvelo ahora y gana +{firstPendingQuiz?.xpReward || 40} XP!
+                    <p className="mb-6 text-white/90 font-medium leading-relaxed">
+                      {firstPendingQuiz
+                        ? `${firstPendingQuiz.classroomTitle || 'Materia'} • "${firstPendingQuiz.title}" (+${firstPendingQuiz.xpReward || 40} XP)`
+                        : 'Tienes un quiz disponible listo para resolver y sumar XP a tu racha.'}
                     </p>
-                    <button 
-                      onClick={() => setActiveQuiz(firstPendingQuiz)} 
-                      className="tactile inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-brand-green ring-1 ring-black/5 hover:bg-white/90 transition-colors shadow-sm"
+                    <button
+                      type="button"
+                      onClick={() => firstPendingQuiz && setActiveQuiz(firstPendingQuiz)}
+                      className="tactile inline-flex items-center gap-2.5 rounded-xl bg-white px-5 py-3.5 text-sm font-extrabold text-brand-green shadow-[0_4px_0_0_#46a302] hover:bg-white/95 transition-all"
                     >
-                      <Play className="size-4 fill-current" strokeWidth={0} /> Resolver Quiz Ahora
+                      <Play className="size-4 fill-current" strokeWidth={0} /> Comenzar quiz
                     </button>
                   </div>
+
+                  {/* Círculos decorativos absolutos */}
                   <div className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full bg-white/10" />
                   <div className="pointer-events-none absolute -bottom-24 right-24 size-48 rounded-full bg-white/5" />
+
+                  {/* Mascota en círculo translúcido */}
                   <div className="pointer-events-none relative z-10 hidden md:block">
-                    <div className="grid size-56 place-items-center rounded-full bg-white/15 backdrop-blur-sm">
-                      <img src={mascotOwl} alt="Mascota búho" className="size-44 drop-shadow-lg object-contain" />
+                    <div className="grid size-56 place-items-center rounded-full bg-white/15 backdrop-blur-sm border border-white/20">
+                      <img
+                        src={mascotOwl}
+                        alt="Mascota búho EduGami leyendo un libro"
+                        width={176}
+                        height={176}
+                        className="size-44 object-contain drop-shadow-lg"
+                      />
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="relative flex items-center justify-between overflow-hidden rounded-[28px] bg-zinc-800 p-8 text-white border-2 border-zinc-700">
+                <div className="relative flex items-center justify-between overflow-hidden rounded-[28px] bg-brand-blue/15 p-8 text-zinc-700 ring-1 ring-black/5 shadow-xs">
                   <div className="relative z-10 max-w-[46ch]">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider backdrop-blur-sm text-yellow-300">
-                      <span>💤</span> Todo completado por hoy
+                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-blue/20 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-brand-blue backdrop-blur-sm">
+                      <Clock className="size-3.5" strokeWidth={3} /> Sin quizzes activos
                     </div>
-                    <h2 className="mb-3 text-2xl font-bold leading-tight md:text-3xl">¡Has terminado tus quizzes! 😴</h2>
-                    <p className="mb-6 text-zinc-300 font-medium">
-                      No hay más quizzes pendientes por resolver en tus materias. Tu búho se ha dormido plácidamente. ¡Vuelve mañana para continuar tu racha!
+                    <h2 className="mb-3 text-2xl font-bold leading-tight text-zinc-900 md:text-3xl">
+                      El búho está descansando
+                    </h2>
+                    <p className="mb-6 text-zinc-600 font-medium leading-relaxed">
+                      No tienes quizzes pendientes por ahora. Vuelve más tarde o repasa material de tus clases para mantener la racha.
                     </p>
-                    <div className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-5 py-3 text-sm font-bold text-white border border-white/20">
-                      <CheckCircle2 className="size-4 text-brand-green" /> ¡Todo al día! Tómate un descanso
-                    </div>
+                    <button
+                      type="button"
+                      disabled
+                      aria-disabled="true"
+                      className="inline-flex items-center gap-2.5 rounded-xl bg-white/70 px-5 py-3.5 text-sm font-extrabold text-zinc-400 cursor-not-allowed border border-zinc-200/60 shadow-none"
+                    >
+                      <Play className="size-4 fill-current opacity-40" strokeWidth={0} /> No hay quizzes disponibles
+                    </button>
                   </div>
-                  <div className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full bg-white/5" />
+
+                  {/* Círculos decorativos absolutos */}
+                  <div className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full bg-brand-blue/10" />
+                  <div className="pointer-events-none absolute -bottom-24 right-24 size-48 rounded-full bg-brand-blue/5" />
+
+                  {/* Mascota durmiendo en círculo translúcido */}
                   <div className="pointer-events-none relative z-10 hidden md:block">
-                    <div className="grid size-56 place-items-center rounded-full bg-white/10 backdrop-blur-sm">
-                      <img src={sleepingOwl} alt="Búho Durmiendo" className="size-44 drop-shadow-xl object-contain rounded-2xl" />
+                    <div className="grid size-56 place-items-center rounded-full bg-white/40 backdrop-blur-sm border border-white/40 shadow-xs">
+                      <img
+                        src={mascotOwlSleeping}
+                        alt="Mascota búho durmiendo"
+                        width={176}
+                        height={176}
+                        className="size-44 object-contain drop-shadow-md"
+                      />
                     </div>
                   </div>
                 </div>

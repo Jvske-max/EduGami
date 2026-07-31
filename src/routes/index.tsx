@@ -4,8 +4,10 @@ import { DashboardContent } from '../components/DashboardContent';
 export const Route = createFileRoute('/')({
   head: () => ({
     meta: [
-      { title: "Inicio — EduGami" },
-      { name: "description", content: "Tu panel de estudiante EduGami" },
+      { title: "Inicio · EduGami" },
+      { name: "description", content: "Tu panel de estudiante EduGami con tus quizzes, clases y racha de aprendizaje." },
+      { property: "og:title", content: "Inicio · EduGami" },
+      { property: "og:description", content: "Tu panel de estudiante EduGami con tus quizzes, clases y racha de aprendizaje." },
     ],
   }),
   // Guardia de seguridad: Verificación compatible con SSR

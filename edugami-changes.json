@@ -1,0 +1,161 @@
+{
+  "spec_version": "1.0",
+  "project": "EduGami LMS",
+  "description": "Cambios de UI a aplicar en el proyecto final: pantallas de autenticacion (login/register) y estado 'sin quizzes' del dashboard del estudiante con la mascota buho durmiendo.",
+  "stack": {
+    "framework": "React 19 + TanStack Start / TanStack Router",
+    "bundler": "Vite 7",
+    "styling": "Tailwind CSS v4 (tokens en src/styles.css con @theme)",
+    "icons": "lucide-react",
+    "language": "TypeScript",
+    "locale": "es"
+  },
+  "design_system": {
+    "direction": "Rail academico + gamificado (Google Classroom + Duolingo/Mimo)",
+    "tokens": {
+      "--color-brand-green": "#58cc02",
+      "--color-brand-green-dark": "#46a302",
+      "--color-brand-orange": "#ff9600",
+      "--color-brand-blue": "#1cb0f6",
+      "--color-brand-purple": "#a560ff",
+      "--color-brand-cream": "#fdfcf7",
+      "--color-brand-paper": "#faf9f2"
+    },
+    "utilities": {
+      "tactile": "Boton con sombra solida inferior (0 4px 0 0) que se hunde 2px en :active, estilo Duolingo"
+    },
+    "radii": "Tarjetas 20-28px, botones 12px, avatares full",
+    "typography": "Geist (sans), pesos 400/500/600, tracking-tight en titulos",
+    "rules": [
+      "Nunca hardcodear colores hex en componentes: usar tokens brand-*",
+      "Textos en espanol, tono cercano y motivador",
+      "Sin gradientes morado/indigo genericos"
+    ]
+  },
+  "assets": [
+    {
+      "path": "src/assets/mascot-owl.png",
+      "type": "image/png",
+      "description": "Buho mascota flat vector leyendo un libro, colores brand-green/orange, fondo transparente, 512x512",
+      "action": "reutilizar si ya existe, si no generar"
+    },
+    {
+      "path": "src/assets/mascot-owl-sleeping.png",
+      "type": "image/png",
+      "description": "Mismo buho en el mismo estilo flat vector pero durmiendo: ojos cerrados en arco, cabeza inclinada, burbuja 'zZ', fondo transparente, 512x512",
+      "action": "generar"
+    }
+  ],
+  "changes": [
+    {
+      "id": "auth-login",
+      "file": "src/routes/login.tsx",
+      "type": "create",
+      "route": "/login",
+      "layout": "split-screen (panel izquierdo de marca + panel derecho de formulario), colapsa a una sola columna en movil",
+      "left_panel": {
+        "background": "gradiente de marca (brand-green -> brand-blue)",
+        "content": [
+          "Logo EduGami con icono Zap en cuadro redondeado",
+          "Mascota buho (mascot-owl.png) sobre circulo translucido",
+          "Titular motivacional + subtitulo",
+          "3 chips de estadisticas: Racha, XP, Liga"
+        ]
+      },
+      "right_panel": {
+        "form_fields": [
+          { "name": "email", "label": "Correo institucional", "type": "email", "required": true },
+          { "name": "password", "label": "Contrasena", "type": "password", "required": true, "toggle_visibility": true }
+        ],
+        "extras": [
+          "Checkbox 'Recuerdame'",
+          "Link '¿Olvidaste tu contrasena?'",
+          "Boton primario tactile 'Entrar' en brand-green",
+          "Link cruzado a /register"
+        ]
+      },
+      "head": {
+        "title": "Iniciar sesion · EduGami",
+        "description": "Accede a tu panel EduGami: quizzes rapidos, racha diaria, XP y tus clases."
+      }
+    },
+    {
+      "id": "auth-register",
+      "file": "src/routes/register.tsx",
+      "type": "create",
+      "route": "/register",
+      "layout": "split-screen espejo del login",
+      "right_panel": {
+        "form_fields": [
+          { "name": "fullName", "label": "Nombre completo", "type": "text", "required": true },
+          { "name": "email", "label": "Correo institucional", "type": "email", "required": true },
+          { "name": "alias", "label": "Alias para el ranking", "type": "text", "required": true, "hint": "Se muestra en el leaderboard en vez de tu nombre real" },
+          { "name": "role", "label": "Rol", "type": "segmented", "options": ["Estudiante", "Docente"], "default": "Estudiante" },
+          { "name": "password", "label": "Contrasena", "type": "password", "required": true },
+          { "name": "terms", "label": "Acepto los terminos y el codigo de honor", "type": "checkbox", "required": true }
+        ],
+        "extras": [
+          "Boton primario tactile 'Crear cuenta'",
+          "Link cruzado a /login"
+        ]
+      },
+      "benefits_cards": [
+        { "icon": "Flame", "title": "Racha diaria", "text": "Estudia 5 minutos al dia y manten tu racha viva" },
+        { "icon": "Zap", "title": "Quizzes rapidos", "text": "Micro-lecciones que suman XP en cada clase" },
+        { "icon": "Trophy", "title": "Logros y ligas", "text": "Compite con seudonimo en la liga semanal" }
+      ],
+      "head": {
+        "title": "Crear cuenta · EduGami",
+        "description": "Registrate en EduGami y empieza a ganar XP con micro-lecciones gamificadas."
+      }
+    },
+    {
+      "id": "dashboard-hero-empty-state",
+      "file": "src/routes/index.tsx",
+      "type": "modify",
+      "summary": "El hero central del dashboard alterna entre estado con quiz y estado sin quizzes.",
+      "state_flag": {
+        "name": "hasQuizAvailable",
+        "type": "boolean",
+        "source": "por ahora constante local; en el proyecto final debe venir del backend (quiz pendiente del estudiante)"
+      },
+      "states": {
+        "quiz_available": {
+          "background": "bg-brand-green, texto blanco",
+          "badge": "Micro-leccion · 5 min (icono Clock)",
+          "title": "Continuar aprendiendo",
+          "body": "Nombre de la clase + tema del quiz + XP a ganar",
+          "cta": { "label": "Comenzar quiz", "icon": "Play", "enabled": true, "style": "tactile blanco sobre verde" },
+          "mascot": "src/assets/mascot-owl.png sobre circulo bg-white/15"
+        },
+        "no_quiz": {
+          "background": "bg-brand-blue/15, texto zinc-700, ring-1 ring-black/5",
+          "badge": "Sin quizzes activos (icono Clock)",
+          "title": "El buho esta descansando",
+          "body": "No tienes quizzes pendientes por ahora. Vuelve mas tarde o repasa material de tus clases para mantener la racha.",
+          "cta": { "label": "No hay quizzes disponibles", "icon": "Play", "enabled": false, "style": "bg-white/70, texto zinc-400, cursor-not-allowed, sin efecto tactile" },
+          "mascot": "src/assets/mascot-owl-sleeping.png sobre circulo bg-white/40"
+        }
+      },
+      "shared": [
+        "Contenedor rounded-[28px], p-8, overflow-hidden, flex items-center justify-between",
+        "Dos circulos decorativos absolutos (uno arriba-derecha, otro abajo-derecha) con opacidad baja",
+        "La mascota se oculta en movil (hidden md:block) y usa width/height explicitos + alt descriptivo"
+      ]
+    }
+  ],
+  "accessibility": [
+    "alt descriptivo en ambas mascotas",
+    "label asociado a cada input (o aria-label)",
+    "boton deshabilitado con atributo disabled real, no solo estilos",
+    "focus ring visible: ring-2 ring-brand-green/30"
+  ],
+  "acceptance_criteria": [
+    "/login y /register renderizan sin errores y enlazan entre si",
+    "Ambas pantallas son responsivas: split-screen en >=md, una columna en movil",
+    "El dashboard con hasQuizAvailable=false muestra el buho durmiendo, fondo azul tenue y boton deshabilitado",
+    "El dashboard con hasQuizAvailable=true muestra el hero verde con boton activo",
+    "No hay colores hardcodeados fuera de los tokens brand-*",
+    "Cada ruta define su propio head() con title y description unicos"
+  ]
+}
