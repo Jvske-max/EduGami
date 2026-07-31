@@ -1,0 +1,34 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Runs every day at 00:00 UTC to prevent project pausing due to inactivity
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    name: Ping Supabase Services
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping PostgREST API (Triggers Database Activity)
+        run: |
+          echo "Pinging Supabase REST API..."
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}")
+
+          echo "PostgREST HTTP Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 400 ]; then
+            echo "Supabase REST API is active."
+          else
+            echo "Error: PostgREST ping failed with status $HTTP_STATUS"
+            exit 1
+          fi
+
+      - name: Ping Auth Health Endpoint
+        run: |
+          echo "Pinging Auth Service..."
+          curl -s -f -X GET "${{ secrets.SUPABASE_URL }}/auth/v1/health" \
+            -H "apikey: ${{ secrets.SUPABASE_KEY }}"
