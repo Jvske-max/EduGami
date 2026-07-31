@@ -29,7 +29,7 @@ export const Login = () => {
       if (data.user.role === 'TEACHER') {
         navigate({ to: '/teacher' });
       } else {
-        navigate({ to: '/' });
+        navigate({ to: '/dashboard' });
       }
     } catch (err: any) {
       console.error(err);

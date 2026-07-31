@@ -12,7 +12,7 @@ export const Route = createFileRoute('/teacher')({
       }
 
       if (role === 'STUDENT') {
-        throw redirect({ to: '/' });
+        throw redirect({ to: '/dashboard' });
       }
     }
   },

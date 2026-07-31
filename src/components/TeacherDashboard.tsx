@@ -92,7 +92,7 @@ export const TeacherDashboard = () => {
         return;
       }
       if (role === 'STUDENT') {
-        navigate({ to: '/' });
+        navigate({ to: '/dashboard' });
         return;
       }
     }

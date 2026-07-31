@@ -19,7 +19,7 @@ export const Route = createFileRoute('/login')({
         if (role === 'TEACHER') {
           throw redirect({ to: '/teacher' });
         } else {
-          throw redirect({ to: '/' });
+          throw redirect({ to: '/dashboard' });
         }
       }
     }
